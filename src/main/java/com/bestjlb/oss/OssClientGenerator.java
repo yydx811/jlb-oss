@@ -23,4 +23,8 @@ public class OssClientGenerator {
         }
         return client;
     }
+
+    public OssConfig getConfig() {
+        return config;
+    }
 }
