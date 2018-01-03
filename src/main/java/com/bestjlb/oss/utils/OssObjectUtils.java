@@ -23,11 +23,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class OssObjectUtils {
 
-    private final ExecutorService uploadExecutor = Executors.newWorkStealingPool(Runtime.getRuntime().availableProcessors() * 2);
+    private static final ExecutorService UPLOAD_EXECUTOR = Executors.newWorkStealingPool(Runtime.getRuntime().availableProcessors() * 2);
 
-    private final ExecutorService downloadExecutor = Executors.newWorkStealingPool(Runtime.getRuntime().availableProcessors() * 2);
+    private static final ExecutorService DOWNLOAD_EXECUTOR = Executors.newWorkStealingPool(Runtime.getRuntime().availableProcessors() * 2);
 
-    private final long defaultPartSize = OSSConstants.KB * 1024L;
+    private static final long DEFAULT_PART_SIZE = OSSConstants.KB * 1024L;
 
     /**
      * 按条件分页列举文件
@@ -38,7 +38,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public ObjectListing listObjects(OSSClient client, ListObjectsRequest request) throws OSSException, ClientException {
+    public static ObjectListing listObjects(OSSClient client, ListObjectsRequest request) throws OSSException, ClientException {
         return client.listObjects(request);
     }
 
@@ -60,7 +60,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public ObjectListing listObjects(OSSClient client, String bucketName, String prefix, String marker, String delimiter, Integer maxKeys) throws OSSException, ClientException {
+    public static ObjectListing listObjects(OSSClient client, String bucketName, String prefix, String marker, String delimiter, Integer maxKeys) throws OSSException, ClientException {
         return listObjects(client, new ListObjectsRequest(bucketName, prefix, marker, delimiter, maxKeys));
     }
 
@@ -80,7 +80,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public List<OSSObjectSummary> listAllObjects(OSSClient client, String bucketName, String prefix, String marker, String delimiter) throws OSSException, ClientException {
+    public static List<OSSObjectSummary> listAllObjects(OSSClient client, String bucketName, String prefix, String marker, String delimiter) throws OSSException, ClientException {
         Asserts.check(StringUtils.isBlank(prefix), "");
         List<OSSObjectSummary> result = new ArrayList<>();
         ObjectListing list;
@@ -106,7 +106,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public PutObjectResult putObject(OSSClient client, String bucketName, String key, InputStream input) throws OSSException, ClientException {
+    public static PutObjectResult putObject(OSSClient client, String bucketName, String key, InputStream input) throws OSSException, ClientException {
         return putObject(client, bucketName, key, input, null);
     }
 
@@ -126,7 +126,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public PutObjectResult putObject(OSSClient client, String bucketName, String key, InputStream input, ObjectMetadata metadata) throws OSSException, ClientException {
+    public static PutObjectResult putObject(OSSClient client, String bucketName, String key, InputStream input, ObjectMetadata metadata) throws OSSException, ClientException {
         return putObject(client, new PutObjectRequest(bucketName, key, input, metadata));
     }
 
@@ -144,7 +144,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public PutObjectResult putObject(OSSClient client, String bucketName, String key, File file) throws OSSException, ClientException {
+    public static PutObjectResult putObject(OSSClient client, String bucketName, String key, File file) throws OSSException, ClientException {
         return putObject(client, bucketName, key, file, null);
     }
 
@@ -164,7 +164,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public PutObjectResult putObject(OSSClient client, String bucketName, String key, File file, ObjectMetadata metadata) throws OSSException, ClientException {
+    public static PutObjectResult putObject(OSSClient client, String bucketName, String key, File file, ObjectMetadata metadata) throws OSSException, ClientException {
         return putObject(client, new PutObjectRequest(bucketName, key, file, metadata));
     }
 
@@ -177,7 +177,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public PutObjectResult putObject(OSSClient client, PutObjectRequest request) throws OSSException, ClientException {
+    public static PutObjectResult putObject(OSSClient client, PutObjectRequest request) throws OSSException, ClientException {
         return client.putObject(request);
     }
 
@@ -193,7 +193,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public boolean doesObjectExist(OSSClient client, String bucketName, String key) throws OSSException, ClientException {
+    public static boolean doesObjectExist(OSSClient client, String bucketName, String key) throws OSSException, ClientException {
         return doesObjectExist(client, new GenericRequest(bucketName, key));
     }
 
@@ -206,7 +206,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public boolean doesObjectExist(OSSClient client, GenericRequest request) throws OSSException, ClientException {
+    public static boolean doesObjectExist(OSSClient client, GenericRequest request) throws OSSException, ClientException {
         return client.doesObjectExist(request);
     }
 
@@ -224,7 +224,7 @@ public class OssObjectUtils {
      *          每片大小
      * @return
      */
-    public CompleteMultipartUploadResult multipartUpload(OSSClient client, String bucketName, String key, File file, long partSize) {
+    public static CompleteMultipartUploadResult multipartUpload(OSSClient client, String bucketName, String key, File file, long partSize) {
         Asserts.check(partSize > 0, "part size can't be less than 1!");
         long length = file.length();
         int partCount = (int) (file.length() / partSize);
@@ -245,7 +245,7 @@ public class OssObjectUtils {
             long startPos = i * partSize;
             long curPartSize = (i + 1 == partCount) ? (length - startPos) : partSize;
             int partNum = i + 1;
-            uploadExecutor.execute(() -> {
+            UPLOAD_EXECUTOR.execute(() -> {
                 InputStream is = null;
                 try {
                     is = new FileInputStream(file);
@@ -309,7 +309,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public PartListing listParts(OSSClient client, String bucketName, String key, String uploadId, int maxParts, int partNum) throws OSSException, ClientException {
+    public static PartListing listParts(OSSClient client, String bucketName, String key, String uploadId, int maxParts, int partNum) throws OSSException, ClientException {
         ListPartsRequest request = new ListPartsRequest(bucketName, key, uploadId);
         request.setMaxParts(maxParts);
         request.setPartNumberMarker(partNum);
@@ -325,7 +325,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public PartListing listParts(OSSClient client, ListPartsRequest request) throws OSSException, ClientException {
+    public static PartListing listParts(OSSClient client, ListPartsRequest request) throws OSSException, ClientException {
         return client.listParts(request);
     }
 
@@ -345,7 +345,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public List<PartSummary> listAllParts(OSSClient client, String bucketName, String key, String uploadId, int partNum) throws OSSException, ClientException {
+    public static List<PartSummary> listAllParts(OSSClient client, String bucketName, String key, String uploadId, int partNum) throws OSSException, ClientException {
         List<PartSummary> result = new ArrayList<>();
         PartListing list;
         do {
@@ -369,8 +369,8 @@ public class OssObjectUtils {
      * @return
      * @throws Throwable
      */
-    public UploadFileResult checkpointUpload(OSSClient client, String bucketName, String key, String uploadFile) throws Throwable {
-        return checkpointUpload(client, new UploadFileRequest(bucketName, key, uploadFile, defaultPartSize, 5, true));
+    public static UploadFileResult checkpointUpload(OSSClient client, String bucketName, String key, String uploadFile) throws Throwable {
+        return checkpointUpload(client, new UploadFileRequest(bucketName, key, uploadFile, DEFAULT_PART_SIZE, 5, true));
     }
 
     /**
@@ -381,7 +381,7 @@ public class OssObjectUtils {
      * @return
      * @throws Throwable
      */
-    public UploadFileResult checkpointUpload(OSSClient client, UploadFileRequest request) throws Throwable {
+    public static UploadFileResult checkpointUpload(OSSClient client, UploadFileRequest request) throws Throwable {
         return client.uploadFile(request);
     }
 
@@ -398,7 +398,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public void setObjectAcl(OSSClient client, String bucketName, String key, CannedAccessControlList acl) throws OSSException, ClientException {
+    public static void setObjectAcl(OSSClient client, String bucketName, String key, CannedAccessControlList acl) throws OSSException, ClientException {
         setObjectAcl(client, new SetObjectAclRequest(bucketName, key, acl));
     }
 
@@ -410,7 +410,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public void setObjectAcl(OSSClient client, SetObjectAclRequest request) throws OSSException, ClientException {
+    public static void setObjectAcl(OSSClient client, SetObjectAclRequest request) throws OSSException, ClientException {
         client.setObjectAcl(request);
     }
 
@@ -423,7 +423,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public ObjectAcl getObjectAcl(OSSClient client, GenericRequest request) throws OSSException, ClientException {
+    public static ObjectAcl getObjectAcl(OSSClient client, GenericRequest request) throws OSSException, ClientException {
         return client.getObjectAcl(request);
     }
 
@@ -439,7 +439,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public ObjectAcl getObjectAcl(OSSClient client, String bucketName, String key) throws OSSException, ClientException {
+    public static ObjectAcl getObjectAcl(OSSClient client, String bucketName, String key) throws OSSException, ClientException {
         return getObjectAcl(client, new GenericRequest(bucketName, key));
     }
 
@@ -455,7 +455,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public OSSObject getObject(OSSClient client, String bucketName, String key) throws OSSException, ClientException {
+    public static OSSObject getObject(OSSClient client, String bucketName, String key) throws OSSException, ClientException {
         return getObject(client, new GetObjectRequest(bucketName, key));
     }
 
@@ -468,7 +468,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public OSSObject getObject(OSSClient client, GetObjectRequest request) throws OSSException, ClientException {
+    public static OSSObject getObject(OSSClient client, GetObjectRequest request) throws OSSException, ClientException {
         return client.getObject(request);
     }
 
@@ -483,7 +483,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public ObjectMetadata getObject(OSSClient client, GetObjectRequest request, File localFile) throws OSSException, ClientException {
+    public static ObjectMetadata getObject(OSSClient client, GetObjectRequest request, File localFile) throws OSSException, ClientException {
         return client.getObject(request, localFile);
     }
 
@@ -499,7 +499,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public ObjectMetadata getObjectMetadata(OSSClient client, String bucketName, String key) throws OSSException, ClientException {
+    public static ObjectMetadata getObjectMetadata(OSSClient client, String bucketName, String key) throws OSSException, ClientException {
         return getObjectMetadata(client, new GetObjectRequest(bucketName, key));
     }
 
@@ -512,7 +512,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public ObjectMetadata getObjectMetadata(OSSClient client, GetObjectRequest request) throws OSSException, ClientException {
+    public static ObjectMetadata getObjectMetadata(OSSClient client, GetObjectRequest request) throws OSSException, ClientException {
         return client.getObjectMetadata(request);
     }
 
@@ -530,7 +530,7 @@ public class OssObjectUtils {
      * @throws ClientException
      * @throws IOException
      */
-    public void multipartDownload(OSSClient client, String bucketName, String key, String localFilePath) throws OSSException, ClientException, IOException {
+    public static void multipartDownload(OSSClient client, String bucketName, String key, String localFilePath) throws OSSException, ClientException, IOException {
         multipartDownload(client, new GetObjectRequest(bucketName, key), localFilePath);
     }
 
@@ -545,23 +545,23 @@ public class OssObjectUtils {
      * @throws ClientException
      * @throws IOException
      */
-    public void multipartDownload(OSSClient client, GetObjectRequest request, String localFilePath) throws OSSException, ClientException, IOException {
+    public static void multipartDownload(OSSClient client, GetObjectRequest request, String localFilePath) throws OSSException, ClientException, IOException {
         ObjectMetadata metadata = getObjectMetadata(client, request);
         long size = metadata.getContentLength();
         RandomAccessFile raf = new RandomAccessFile(localFilePath, "rw");
         raf.setLength(size);
         raf.close();
-        int partCount = (int) (size / defaultPartSize);
-        if (size % defaultPartSize != 0) {
+        int partCount = (int) (size / DEFAULT_PART_SIZE);
+        if (size % DEFAULT_PART_SIZE != 0) {
             ++partCount;
         }
 
         final AtomicInteger completedBlocks = new AtomicInteger(0);
         final CountDownLatch countDown = new CountDownLatch(partCount);
         for (int i = 0; i < partCount; ++i) {
-            long startPos = i * defaultPartSize;
-            long endPos = (i + 1 == partCount) ? size : (i + 1) * defaultPartSize;
-            downloadExecutor.execute(() -> {
+            long startPos = i * DEFAULT_PART_SIZE;
+            long endPos = (i + 1 == partCount) ? size : (i + 1) * DEFAULT_PART_SIZE;
+            DOWNLOAD_EXECUTOR.execute(() -> {
                 RandomAccessFile file = null;
                 try {
                     file = new RandomAccessFile(localFilePath, "rw");
@@ -618,8 +618,8 @@ public class OssObjectUtils {
      * @return
      * @throws Throwable
      */
-    public DownloadFileResult checkpointDownload(OSSClient client, String bucketName, String key, String localFile) throws Throwable {
-        return checkpointDownload(client, new DownloadFileRequest(bucketName, key, localFile, defaultPartSize, 5, true));
+    public static DownloadFileResult checkpointDownload(OSSClient client, String bucketName, String key, String localFile) throws Throwable {
+        return checkpointDownload(client, new DownloadFileRequest(bucketName, key, localFile, DEFAULT_PART_SIZE, 5, true));
     }
 
     /**
@@ -630,7 +630,7 @@ public class OssObjectUtils {
      * @return
      * @throws Throwable
      */
-    public DownloadFileResult checkpointDownload(OSSClient client, DownloadFileRequest request) throws Throwable {
+    public static DownloadFileResult checkpointDownload(OSSClient client, DownloadFileRequest request) throws Throwable {
         return client.downloadFile(request);
     }
 
@@ -646,7 +646,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public DeleteObjectsResult deleteObjects(OSSClient client, String bucketName, String... keys) throws OSSException, ClientException {
+    public static DeleteObjectsResult deleteObjects(OSSClient client, String bucketName, String... keys) throws OSSException, ClientException {
         Asserts.check(keys == null || keys.length == 0, "object keys can't be empty!");
         return deleteObjects(client, bucketName, Arrays.asList(keys));
     }
@@ -663,7 +663,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public DeleteObjectsResult deleteObjects(OSSClient client, String bucketName, List<String> keys) throws OSSException, ClientException {
+    public static DeleteObjectsResult deleteObjects(OSSClient client, String bucketName, List<String> keys) throws OSSException, ClientException {
         return deleteObjects(client, new DeleteObjectsRequest(bucketName).withKeys(keys));
     }
 
@@ -676,7 +676,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public DeleteObjectsResult deleteObjects(OSSClient client, DeleteObjectsRequest request) throws OSSException, ClientException {
+    public static DeleteObjectsResult deleteObjects(OSSClient client, DeleteObjectsRequest request) throws OSSException, ClientException {
         return client.deleteObjects(request);
     }
 
@@ -692,7 +692,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public void deleteObjects(OSSClient client, String bucketName, String key) throws OSSException, ClientException {
+    public static void deleteObjects(OSSClient client, String bucketName, String key) throws OSSException, ClientException {
         deleteObjects(client, new GenericRequest(bucketName, key));
     }
 
@@ -705,7 +705,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public void deleteObjects(OSSClient client, GenericRequest request) throws OSSException, ClientException {
+    public static void deleteObjects(OSSClient client, GenericRequest request) throws OSSException, ClientException {
         client.deleteObject(request);
     }
 
@@ -721,7 +721,7 @@ public class OssObjectUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public PutObjectResult createFolder(OSSClient client, String bucketName, String folderName) throws OSSException, ClientException {
+    public static PutObjectResult createFolder(OSSClient client, String bucketName, String folderName) throws OSSException, ClientException {
         return putObject(client, bucketName, folderName.endsWith("/") ? folderName : folderName + "/", new ByteArrayInputStream(new byte[0]), null);
     }
 }

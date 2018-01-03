@@ -30,7 +30,7 @@ public class OssImageUtils extends OssMediaUtils {
      *          {@link Resize#COLOR}
      * @return
      */
-    public String generateResize(Resize.ResizeModel model, int width, int height, int limit, String color) {
+    public static String generateResize(Resize.ResizeModel model, int width, int height, int limit, String color) {
         Asserts.check(width !=0 || height != 0, "width and height can not both be 0!");
         StringBuilder builder = new StringBuilder(64);
         builder.append(OUTER_SEPARATOR).append(Resize.RESIZE);
@@ -61,7 +61,7 @@ public class OssImageUtils extends OssMediaUtils {
      *          {@link Resize#HEIGHT}
      * @return
      */
-    public String generateResize(int width, int height) {
+    public static String generateResize(int width, int height) {
         return generateResize(null, width, height, 0, null);
     }
 
@@ -74,7 +74,7 @@ public class OssImageUtils extends OssMediaUtils {
      *          当目标缩略图大于原图时是否处理。0表示处理，其余不处理。
      * @return
      */
-    public String generateResizeByScale(int scale, int limit) {
+    public static String generateResizeByScale(int scale, int limit) {
         StringBuilder builder = new StringBuilder(16);
         builder.append(OUTER_SEPARATOR).append(Resize.RESIZE).append(INNER_SEPARATOR)
                 .append(Resize.SCALE).append(PARAMETER_SEPARATOR).append(scale);
@@ -91,7 +91,7 @@ public class OssImageUtils extends OssMediaUtils {
      *          {@link Circle#RADIUS}
      * @return
      */
-    public String generateCircle(int radius) {
+    public static String generateCircle(int radius) {
         return OUTER_SEPARATOR + Circle.CIRCLE + INNER_SEPARATOR + Circle.RADIUS + PARAMETER_SEPARATOR + radius;
     }
 
@@ -110,7 +110,7 @@ public class OssImageUtils extends OssMediaUtils {
      *          {@link Crop#ORIGIN}
      * @return
      */
-    public String generateCrop(int x, int y, int width, int height, Crop.CropOrigin origin) {
+    public static String generateCrop(int x, int y, int width, int height, Crop.CropOrigin origin) {
         StringBuilder builder = new StringBuilder(64);
         builder.append(OUTER_SEPARATOR).append(Crop.CROP).append(INNER_SEPARATOR);
         if (x != 0) {
@@ -142,7 +142,7 @@ public class OssImageUtils extends OssMediaUtils {
      *          {@link IndexCrop#INDEX}
      * @return
      */
-    public String generateIndexCrop(int width, int height, int index) {
+    public static String generateIndexCrop(int width, int height, int index) {
         Asserts.check(width != 0 || height != 0, "one of width or height is required!");
         StringBuilder builder = new StringBuilder(32);
         builder.append(OUTER_SEPARATOR).append(IndexCrop.INDEX_CROP).append(INNER_SEPARATOR);
@@ -162,7 +162,7 @@ public class OssImageUtils extends OssMediaUtils {
      *          {@link RoundedCorners#RADIUS}
      * @return
      */
-    public String generateRoundedCorners(int radius) {
+    public static String generateRoundedCorners(int radius) {
         return OUTER_SEPARATOR + RoundedCorners.ROUNDED_CORNERS + INNER_SEPARATOR + RoundedCorners.RADIUS + radius;
     }
 
@@ -173,7 +173,7 @@ public class OssImageUtils extends OssMediaUtils {
      *          {@link AutoOrient#AUTO_ORIENT}
      * @return
      */
-    public String generateAutoOrient(int auto) {
+    public static String generateAutoOrient(int auto) {
         return OUTER_SEPARATOR + AutoOrient.AUTO_ORIENT + INNER_SEPARATOR + auto;
     }
 
@@ -184,7 +184,7 @@ public class OssImageUtils extends OssMediaUtils {
      *          顺时针旋转角度，0-360
      * @return
      */
-    public String generateRotate(int degrees) {
+    public static String generateRotate(int degrees) {
         return OUTER_SEPARATOR + Rotate.ROTATE + INNER_SEPARATOR + degrees;
     }
 
@@ -197,7 +197,7 @@ public class OssImageUtils extends OssMediaUtils {
      *          正态分布的标准差，1-50，越大越模糊
      * @return
      */
-    public String generateBlur(int r, int s) {
+    public static String generateBlur(int r, int s) {
         return OUTER_SEPARATOR
                 + Blur.BLUR + INNER_SEPARATOR
                 + Blur.R + PARAMETER_SEPARATOR + r + INNER_SEPARATOR
@@ -211,7 +211,7 @@ public class OssImageUtils extends OssMediaUtils {
      *          亮度参数，0原亮度，-100到100，越大越亮
      * @return
      */
-    public String generateBright(int bright) {
+    public static String generateBright(int bright) {
         return OUTER_SEPARATOR + Bright.BRIGHT + INNER_SEPARATOR + bright;
     }
 
@@ -222,7 +222,7 @@ public class OssImageUtils extends OssMediaUtils {
      *          对比度参数，0原对比度，-100到100，越大对比度越大
      * @return
      */
-    public String generateContrast(int contrast) {
+    public static String generateContrast(int contrast) {
         return OUTER_SEPARATOR + Contrast.CONTRAST + INNER_SEPARATOR + contrast;
     }
 
@@ -233,7 +233,7 @@ public class OssImageUtils extends OssMediaUtils {
      *          锐化值50-399，推荐100
      * @return
      */
-    public String generateSharpen(int sharpen) {
+    public static String generateSharpen(int sharpen) {
         return OUTER_SEPARATOR + Sharpen.SHARPEN + INNER_SEPARATOR + sharpen;
     }
 
@@ -244,7 +244,7 @@ public class OssImageUtils extends OssMediaUtils {
      *          转换类型，{@link Format.FormatType}
      * @return
      */
-    public String generateFormat(Format.FormatType type) {
+    public static String generateFormat(Format.FormatType type) {
         return OUTER_SEPARATOR + Format.FORMAT + INNER_SEPARATOR + type.type;
     }
 
@@ -255,7 +255,7 @@ public class OssImageUtils extends OssMediaUtils {
      *          jpg显示的时候有两种，0自上而下，1先模糊逐渐清晰，默认0
      * @return
      */
-    public String generateInterlace(int interlace) {
+    public static String generateInterlace(int interlace) {
         return OUTER_SEPARATOR + Interlace.INTERLACE + INNER_SEPARATOR + interlace;
     }
 
@@ -268,7 +268,7 @@ public class OssImageUtils extends OssMediaUtils {
      *          质量参数，1-100
      * @return
      */
-    public String generateQuality(int type, int quality) {
+    public static String generateQuality(int type, int quality) {
         return OUTER_SEPARATOR
                 + Quality.QUALITY + INNER_SEPARATOR
                 + (type == 1 ? Quality.RELATIVE_QUALITY : Quality.ABSOLUTE_QUALITY) + PARAMETER_SEPARATOR + quality;
@@ -312,7 +312,7 @@ public class OssImageUtils extends OssMediaUtils {
      *          {@link Watermark#INTERVAL}，小于0使用默认值0。
      * @return
      */
-    public String generateWatermark(String image, String text,
+    public static String generateWatermark(String image, String text,
                                     int x, int y, int offset, Watermark.WatermarkOrigin origin, int transparency,
                                     Watermark.WatermarkTextType type, String color, int size, int shadow, int rotate, int fill,
                                     int order, int align, int interval) {
@@ -400,7 +400,7 @@ public class OssImageUtils extends OssMediaUtils {
      *          {@link Watermark#FILL}，小于0使用默认值0。
      * @return
      */
-    public String generateWatermark(String text,
+    public static String generateWatermark(String text,
                                     int x, int y, int offset, Watermark.WatermarkOrigin origin, int transparency,
                                     Watermark.WatermarkTextType type, String color, int size, int shadow, int rotate, int fill) {
         return generateWatermark(null, text, x, y, offset, origin, transparency, type, color, size, shadow, rotate, fill, -1, -1, -1);
@@ -414,7 +414,7 @@ public class OssImageUtils extends OssMediaUtils {
      *          <p>注：原文档写的最大64字符，这里本人觉得不妥。https://help.aliyun.com/document_detail/44957.html?spm=5176.doc44693.6.973.jNWj6w
      * @return
      */
-    public String generateWatermark(String text) {
+    public static String generateWatermark(String text) {
         return generateWatermark(null, text, 10, 10, 0, null, 30, null, null, 0, 0, 0, -1, -1, -1, -1);
     }
 
@@ -435,7 +435,7 @@ public class OssImageUtils extends OssMediaUtils {
      *          {@link Watermark#TRANSPARENCY}，小于零使用默认值100。
      * @return
      */
-    public String generateWatermark(String image,
+    public static String generateWatermark(String image,
                                     int x, int y, int offset, Watermark.WatermarkOrigin origin, int transparency) {
         return generateWatermark(image, null, x, y, offset, origin, transparency, null, null, 0, 0, 0, -1, -1, -1, -1);
     }
@@ -449,7 +449,7 @@ public class OssImageUtils extends OssMediaUtils {
      *          {@link Watermark#TRANSPARENCY}，小于零使用默认值100。
      * @return
      */
-    public String generateWatermark(String image, int transparency) {
+    public static String generateWatermark(String image, int transparency) {
         return generateWatermark(image, null, 10, 10, 0, null, transparency, null, null, 0, 0, 0, -1, -1, -1, -1);
     }
 
@@ -458,7 +458,7 @@ public class OssImageUtils extends OssMediaUtils {
      *
      * @return
      */
-    public String generateAverageHue() {
+    public static String generateAverageHue() {
         return OUTER_SEPARATOR + AverageHue.AVERAGE_HUE;
     }
 
@@ -467,7 +467,7 @@ public class OssImageUtils extends OssMediaUtils {
      *
      * @return
      */
-    public String generateInfo() {
+    public static String generateInfo() {
         return OUTER_SEPARATOR + Info.INFO;
     }
 

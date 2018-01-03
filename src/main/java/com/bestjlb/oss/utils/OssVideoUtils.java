@@ -25,7 +25,7 @@ public class OssVideoUtils extends OssMediaUtils {
      *          {@link Snapshot.SnapshotFormatType}
      * @return
      */
-    public String generateSnapshot(long time, int width, int height, int model, Snapshot.SnapshotFormatType type) {
+    public static String generateSnapshot(long time, int width, int height, int model, Snapshot.SnapshotFormatType type) {
         StringBuilder builder = new StringBuilder(64);
         builder.append(OUTER_SEPARATOR).append(Snapshot.SNAPSHOT).append(INNER_SEPARATOR)
                 .append(Snapshot.TIME).append(PARAMETER_SEPARATOR).append(time);
@@ -51,7 +51,7 @@ public class OssVideoUtils extends OssMediaUtils {
      *          {@link Snapshot#TIME}
      * @return
      */
-    public String generateSnapshot(long time) {
+    public static String generateSnapshot(long time) {
         return generateSnapshot(time, 0, 0, 0, null);
     }
 
@@ -66,7 +66,7 @@ public class OssVideoUtils extends OssMediaUtils {
      *          {@link Snapshot#HEIGHT}
      * @return
      */
-    public String generateSnapshot(long time, int width, int height) {
+    public static String generateSnapshot(long time, int width, int height) {
         return generateSnapshot(time, width, height, 0, null);
     }
 

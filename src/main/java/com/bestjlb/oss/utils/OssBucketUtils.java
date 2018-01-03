@@ -22,7 +22,7 @@ public class OssBucketUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public List<Bucket> listBuckets(OSSClient client) throws OSSException, ClientException {
+    public static List<Bucket> listBuckets(OSSClient client) throws OSSException, ClientException {
         return client.listBuckets();
     }
 
@@ -35,7 +35,7 @@ public class OssBucketUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public BucketList listBuckets(OSSClient client, ListBucketsRequest request) throws OSSException, ClientException {
+    public static BucketList listBuckets(OSSClient client, ListBucketsRequest request) throws OSSException, ClientException {
         return client.listBuckets(request);
     }
 
@@ -53,7 +53,7 @@ public class OssBucketUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public BucketList listBuckets(OSSClient client, String prefix, String marker, Integer maxKeys) throws OSSException, ClientException {
+    public static BucketList listBuckets(OSSClient client, String prefix, String marker, Integer maxKeys) throws OSSException, ClientException {
         return listBuckets(client, new ListBucketsRequest(prefix, marker, maxKeys));
     }
 
@@ -69,7 +69,7 @@ public class OssBucketUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public List<Bucket> listAllBuckets(OSSClient client, String prefix, String marker) throws OSSException, ClientException {
+    public static List<Bucket> listAllBuckets(OSSClient client, String prefix, String marker) throws OSSException, ClientException {
         List<Bucket> result = new ArrayList<>();
         BucketList list;
         do {
@@ -90,7 +90,7 @@ public class OssBucketUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public boolean doesBucketExist(OSSClient client, String bucketName) throws OSSException, ClientException {
+    public static boolean doesBucketExist(OSSClient client, String bucketName) throws OSSException, ClientException {
         return doesBucketExist(client, new GenericRequest(bucketName));
     }
 
@@ -103,7 +103,7 @@ public class OssBucketUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public boolean doesBucketExist(OSSClient client, GenericRequest request) throws OSSException, ClientException {
+    public static boolean doesBucketExist(OSSClient client, GenericRequest request) throws OSSException, ClientException {
         return client.doesBucketExist(request);
     }
 
@@ -117,7 +117,7 @@ public class OssBucketUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public Bucket createBucket(OSSClient client, String bucketName) throws OSSException, ClientException {
+    public static Bucket createBucket(OSSClient client, String bucketName) throws OSSException, ClientException {
         return createBucket(client, new CreateBucketRequest(bucketName));
     }
 
@@ -130,7 +130,7 @@ public class OssBucketUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public Bucket createBucket(OSSClient client, CreateBucketRequest request) throws OSSException, ClientException {
+    public static Bucket createBucket(OSSClient client, CreateBucketRequest request) throws OSSException, ClientException {
         return client.createBucket(request);
     }
 
@@ -144,7 +144,7 @@ public class OssBucketUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public String getBucketLocation(OSSClient client, String bucketName) throws OSSException, ClientException {
+    public static String getBucketLocation(OSSClient client, String bucketName) throws OSSException, ClientException {
         return getBucketLocation(client, new GenericRequest(bucketName));
     }
 
@@ -157,7 +157,7 @@ public class OssBucketUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public String getBucketLocation(OSSClient client, GenericRequest request) throws OSSException, ClientException {
+    public static String getBucketLocation(OSSClient client, GenericRequest request) throws OSSException, ClientException {
         return client.getBucketLocation(request);
     }
 
@@ -169,7 +169,7 @@ public class OssBucketUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public void setBucketAcl(OSSClient client, SetBucketAclRequest request) throws OSSException, ClientException {
+    public static void setBucketAcl(OSSClient client, SetBucketAclRequest request) throws OSSException, ClientException {
         client.setBucketAcl(request);
     }
 
@@ -183,7 +183,7 @@ public class OssBucketUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public void setBucketAcl(OSSClient client, String bucketName, CannedAccessControlList cannedAcl) throws OSSException, ClientException {
+    public static void setBucketAcl(OSSClient client, String bucketName, CannedAccessControlList cannedAcl) throws OSSException, ClientException {
         setBucketAcl(client, new SetBucketAclRequest(bucketName, cannedAcl));
     }
 
@@ -196,7 +196,7 @@ public class OssBucketUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public AccessControlList getBucketAcl(OSSClient client, GenericRequest request) throws OSSException, ClientException {
+    public static AccessControlList getBucketAcl(OSSClient client, GenericRequest request) throws OSSException, ClientException {
         return client.getBucketAcl(request);
     }
 
@@ -210,7 +210,7 @@ public class OssBucketUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public AccessControlList getBucketAcl(OSSClient client, String bucketName) throws OSSException, ClientException {
+    public static AccessControlList getBucketAcl(OSSClient client, String bucketName) throws OSSException, ClientException {
         return getBucketAcl(client, new GenericRequest(bucketName));
     }
 
@@ -233,7 +233,7 @@ public class OssBucketUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public void setBucketCORS(OSSClient client, String bucketName, List<String> allowedOrigin, List<String> allowedMethod, List<String> allowedHeader, List<String> exposeHeader, Integer maxAge)
+    public static void setBucketCORS(OSSClient client, String bucketName, List<String> allowedOrigin, List<String> allowedMethod, List<String> allowedHeader, List<String> exposeHeader, Integer maxAge)
             throws OSSException, ClientException {
         SetBucketCORSRequest request = new SetBucketCORSRequest(bucketName);
 
@@ -256,7 +256,7 @@ public class OssBucketUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public void setBucketCORS(OSSClient client, SetBucketCORSRequest request) throws OSSException, ClientException {
+    public static void setBucketCORS(OSSClient client, SetBucketCORSRequest request) throws OSSException, ClientException {
         client.setBucketCORS(request);
     }
 
@@ -269,7 +269,7 @@ public class OssBucketUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public List<SetBucketCORSRequest.CORSRule> getBucketCORSRules(OSSClient client, GenericRequest request) throws OSSException, ClientException {
+    public static List<SetBucketCORSRequest.CORSRule> getBucketCORSRules(OSSClient client, GenericRequest request) throws OSSException, ClientException {
         return client.getBucketCORSRules(request);
     }
 
@@ -283,7 +283,7 @@ public class OssBucketUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public List<SetBucketCORSRequest.CORSRule> getBucketCORSRules(OSSClient client, String bucketName) throws OSSException, ClientException {
+    public static List<SetBucketCORSRequest.CORSRule> getBucketCORSRules(OSSClient client, String bucketName) throws OSSException, ClientException {
         return getBucketCORSRules(client, new GenericRequest(bucketName));
     }
 
@@ -295,7 +295,7 @@ public class OssBucketUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public void deleteBucketCORSRules(OSSClient client, GenericRequest request) throws OSSException, ClientException {
+    public static void deleteBucketCORSRules(OSSClient client, GenericRequest request) throws OSSException, ClientException {
         client.deleteBucketCORSRules(request);
     }
 
@@ -308,55 +308,55 @@ public class OssBucketUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public void deleteBucketCORSRules(OSSClient client, String bucketName) throws OSSException, ClientException {
+    public static void deleteBucketCORSRules(OSSClient client, String bucketName) throws OSSException, ClientException {
         deleteBucketCORSRules(client, new GenericRequest(bucketName));
     }
 
-    public void setBucketLifecycle() throws OSSException, ClientException {
+    public static void setBucketLifecycle() throws OSSException, ClientException {
         throw new ClientException("current version doesn't implement!", OSSErrorCode.NOT_IMPLEMENTED, "no request id!");
     }
 
-    public List<LifecycleRule> getBucketLifecycle() throws OSSException, ClientException {
+    public static List<LifecycleRule> getBucketLifecycle() throws OSSException, ClientException {
         throw new ClientException("current version doesn't implement!", OSSErrorCode.NOT_IMPLEMENTED, "no request id!");
     }
 
-    public void deleteBucketLifecycle() throws OSSException, ClientException {
+    public static void deleteBucketLifecycle() throws OSSException, ClientException {
         throw new ClientException("current version doesn't implement!", OSSErrorCode.NOT_IMPLEMENTED, "no request id!");
     }
 
-    public void setBucketLogging() throws OSSException, ClientException {
+    public static void setBucketLogging() throws OSSException, ClientException {
         throw new ClientException("current version doesn't implement!", OSSErrorCode.NOT_IMPLEMENTED, "no request id!");
     }
 
-    public BucketLoggingResult getBucketLogging() throws OSSException, ClientException {
+    public static BucketLoggingResult getBucketLogging() throws OSSException, ClientException {
         throw new ClientException("current version doesn't implement!", OSSErrorCode.NOT_IMPLEMENTED, "no request id!");
     }
 
-    public void deleteBucketLogging() throws OSSException, ClientException {
+    public static void deleteBucketLogging() throws OSSException, ClientException {
         throw new ClientException("current version doesn't implement!", OSSErrorCode.NOT_IMPLEMENTED, "no request id!");
     }
 
-    public void setBucketReferer() throws OSSException, ClientException {
+    public static void setBucketReferer() throws OSSException, ClientException {
         throw new ClientException("current version doesn't implement!", OSSErrorCode.NOT_IMPLEMENTED, "no request id!");
     }
 
-    public List<String> getBucketReferer() throws OSSException, ClientException {
+    public static List<String> getBucketReferer() throws OSSException, ClientException {
         throw new ClientException("current version doesn't implement!", OSSErrorCode.NOT_IMPLEMENTED, "no request id!");
     }
 
-    public void deleteBucketReferer() throws OSSException, ClientException {
+    public static void deleteBucketReferer() throws OSSException, ClientException {
         throw new ClientException("current version doesn't implement!", OSSErrorCode.NOT_IMPLEMENTED, "no request id!");
     }
 
-    public void setBucketWebsite() throws OSSException, ClientException {
+    public static void setBucketWebsite() throws OSSException, ClientException {
         throw new ClientException("current version doesn't implement!", OSSErrorCode.NOT_IMPLEMENTED, "no request id!");
     }
 
-    public BucketWebsiteResult getBucketWebsite() throws OSSException, ClientException {
+    public static BucketWebsiteResult getBucketWebsite() throws OSSException, ClientException {
         throw new ClientException("current version doesn't implement!", OSSErrorCode.NOT_IMPLEMENTED, "no request id!");
     }
 
-    public void deleteBucketWebsite() throws OSSException, ClientException {
+    public static void deleteBucketWebsite() throws OSSException, ClientException {
         throw new ClientException("current version doesn't implement!", OSSErrorCode.NOT_IMPLEMENTED, "no request id!");
     }
 
@@ -368,7 +368,7 @@ public class OssBucketUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public void deleteBucket(OSSClient client, GenericRequest request) throws OSSException, ClientException {
+    public static void deleteBucket(OSSClient client, GenericRequest request) throws OSSException, ClientException {
         client.deleteBucket(request);
     }
 
@@ -381,7 +381,7 @@ public class OssBucketUtils {
      * @throws OSSException
      * @throws ClientException
      */
-    public void deleteBucket(OSSClient client, String bucketName) throws OSSException, ClientException {
+    public static void deleteBucket(OSSClient client, String bucketName) throws OSSException, ClientException {
         deleteBucket(client, new GenericRequest(bucketName));
     }
 }
