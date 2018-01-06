@@ -320,10 +320,10 @@ public class OssImageUtils extends OssMediaUtils {
         StringBuilder builder = new StringBuilder(256);
         builder.append(OUTER_SEPARATOR).append(Watermark.WATERMARK);
         if (StringUtils.isNotBlank(image)) {
-            builder.append(INNER_SEPARATOR).append(Watermark.IMAGE).append(PARAMETER_SEPARATOR).append(new String(Base64.getUrlEncoder().encode(image.getBytes())));
+            builder.append(INNER_SEPARATOR).append(Watermark.IMAGE).append(PARAMETER_SEPARATOR).append(Base64.getUrlEncoder().encodeToString(image.getBytes()));
         }
         if (StringUtils.isNotBlank(text)) {
-            builder.append(INNER_SEPARATOR).append(Watermark.TEXT).append(PARAMETER_SEPARATOR).append(new String(Base64.getUrlEncoder().encode(text.getBytes())));
+            builder.append(INNER_SEPARATOR).append(Watermark.TEXT).append(PARAMETER_SEPARATOR).append(Base64.getUrlEncoder().encodeToString(text.getBytes()));
         }
         if (x != 10) {
             builder.append(INNER_SEPARATOR).append(Watermark.X_AXIS).append(PARAMETER_SEPARATOR).append(x);
