@@ -12,11 +12,11 @@ public class DefaultOssConfigProvider implements OssConfigProvider {
     }
 
     @Override
-    public synchronized void setOssConfig(OssConfig ossConfig) {
+    public synchronized void setOssConfig(OssConfig config) {
         if (config.isSTSModel() && config.isExpired()) {
             return;
         }
-        this.config = ossConfig;
+        this.config = config;
     }
 
     @Override
